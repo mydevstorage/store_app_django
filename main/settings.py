@@ -26,9 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['127.0.0.1']
 DOMAIN_NAME = 'http://127.0.0.1:8000'
+
+ADMINS = [
+    ("Super Man", 'mr88@mail.ru'),
+]
 
 
 # Application definition
@@ -96,13 +100,23 @@ WSGI_APPLICATION = 'main.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'), 
+        'NAME': os.getenv('NAME_DB'),
+        'USER': os.getenv('USER_DB'),
+        'PASSWORD': os.getenv('PASSWORD_DB'),
+        'HOST': os.getenv('HOST_DB'),
+        'PORT': os.getenv('PORT_DB'), 
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'store_db',
+#         'USER': 'store_username',
+#         'PASSWORD': 'Hjvfy160388!',
+#         'HOST': 'localhost',
+#         'PORT': '5432', 
+#     }
+# }
 
 
 # Password validation
@@ -188,6 +202,10 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
+SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+
+
 # OAuth
 
 AUTHENTICATION_BACKENDS = [
@@ -231,3 +249,115 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
     'rest_framework.authentication.TokenAuthentication',]
 }
+
+#LOGGING
+
+LOGGING = {
+    'version': 1,
+
+    'formatters': {
+        'main_format':{
+            "format": "{asctime} - {levelname} - {module} - {filename} - {message}",
+            "style": "{",
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': "simple"},
+        # 'file': {
+        #     "class": 'logging.FileHandler',
+        #     "formatter": "main_formatter",
+        #     "filename": 'logging/info.log'
+        # },
+        'file_server': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_server.log'
+        },
+        'file_template': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_template.log'
+        },
+        'file_request': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_request.log'
+        },
+        'file_django': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_django.log'
+        },
+        'file_main': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_main.log'
+        },
+        'file_security': {
+            "class": 'logging.FileHandler',
+            "formatter": "main_format",
+            "filename": 'logging/info_security.log'
+        },
+        'mail_admins': {
+            'level': 'INFO',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+            # 'email_backend': 'django.core.mail.backends.filebased.EmailBackend',
+        },
+        # 'logstash': {
+        # 'level': 'WARNING',
+        # 'class': 'logstash.TCPLogstashHandler',
+        # 'host': 'localhost',
+        # 'port': 5959, # Default value: 5959
+        # 'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+        # 'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
+        # 'fqdn': False, # Fully qualified domain name. Default value: false.
+        # 'tags': ['django.request'], # list of tags. Default: None.
+        # },
+    },
+
+    'loggers': {
+    #Display in console all raw sql requests
+    #     'django.db.backends': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG'},
+        'django': {
+            'handlers': ['file_django', 'console'],
+            'level': 'WARNING',
+            'propagate': True,},
+
+        'django.request': {
+            'handlers': ['file_request'],
+            'level': 'WARNING',
+            'propagate': True,},
+
+        'django.template': {
+            'handlers': ['file_template'],
+            'level': 'WARNING',
+            'propagate': True,},
+         
+        'django.server': {
+            'handlers': ['file_server'],
+            'level': 'INFO',
+            'propagate': True,},
+
+        'django.security': {
+            'handlers': ['file_security'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        # It's a custom logger logger = logging.getLogger('main')
+        'main': {
+            'handlers': ['file_main', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': False,}
+        }
+    }
+        

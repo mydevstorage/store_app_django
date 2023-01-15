@@ -2,7 +2,9 @@ from user.models import User
 from django.db import models
 import stripe
 from django.conf import settings
+import logging
 
+logger = logging.getLogger('main')
 stripe.api_key = settings.STRIPE_SECRET_KEY 
 
 
